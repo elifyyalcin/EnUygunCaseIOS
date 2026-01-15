@@ -30,6 +30,7 @@ struct Product: Decodable, Equatable {
     let description: String?
     let discountPercentage: Double?
     let thumbnail: String?
+    let images: [String]?
 }
 
 // MARK: - Service Implementation

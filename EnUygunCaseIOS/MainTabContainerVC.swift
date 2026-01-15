@@ -16,10 +16,14 @@ protocol MainTabChildFactoryType {
 }
 
 final class MainTabChildFactory: MainTabChildFactoryType {
+
+    private let favoritesStore: FavoritesStoreType = UserDefaultsFavoritesStore()
+
     func makeHome() -> UIViewController {
         let service = ProductsService()
         let vm = ProductsPageVM(service: service)
-        return ProductsPageVC(viewModel: vm)
+
+        return ProductsPageVC(viewModel: vm, favoritesStore: favoritesStore)
     }
 
     func makeFavorites() -> UIViewController {
@@ -55,6 +59,8 @@ final class MainTabContainerVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.title = "Anasayfa"
+        navigationItem.largeTitleDisplayMode = .never
         bindTabs()
         switchTo(.home)
         applyTabUI(.home)
@@ -124,9 +130,15 @@ final class MainTabContainerVC: UIViewController {
         basketButton.alpha = 0.4
 
         switch tab {
-        case .home: homeButton.alpha = 1
-        case .favorites: favoritesButton.alpha = 1
-        case .basket: basketButton.alpha = 1
+        case .home:
+            homeButton.alpha = 1
+            navigationItem.title = "Anasayfa"
+        case .favorites:
+            favoritesButton.alpha = 1
+            navigationItem.title = "Favorites"
+        case .basket:
+            basketButton.alpha = 1
+            navigationItem.title = "Basket"
         }
     }
 

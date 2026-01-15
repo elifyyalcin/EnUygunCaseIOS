@@ -24,8 +24,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let factory = MainTabChildFactory()
         let root = MainTabContainerVC(factory: factory)
+        
+        let nav = UINavigationController(rootViewController: root)
+        nav.navigationBar.prefersLargeTitles = false
 
-        window.rootViewController = root
+        window.rootViewController = nav
         self.window = window
         window.makeKeyAndVisible()
     }

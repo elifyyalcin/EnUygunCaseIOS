@@ -22,9 +22,12 @@ final class ProductsPageVC: UIViewController, UIScrollViewDelegate {
 
     private let viewModel: ProductsPageVMType
     private let disposeBag = DisposeBag()
+    private let favoritesStore: FavoritesStoreType
 
-    init(viewModel: ProductsPageVMType) {
+
+    init(viewModel: ProductsPageVMType, favoritesStore: FavoritesStoreType) {
         self.viewModel = viewModel
+        self.favoritesStore = favoritesStore
         super.init(nibName: "ProductsPageVC", bundle: nil)
     }
     
@@ -134,6 +137,27 @@ final class ProductsPageVC: UIViewController, UIScrollViewDelegate {
             .bind(to: totalLabel.rx.text)
             .disposed(by: disposeBag)
 
+        tableView.rx.itemSelected
+            .withLatestFrom(viewModel.products) { indexPath, products in
+                (indexPath, products[indexPath.row])
+            }
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] indexPath, product in
+                guard let self else { return }
+
+                self.tableView.deselectRow(at: indexPath, animated: true)
+
+                let detailVM = ProductDetailViewModel(product: product, favoritesStore: self.favoritesStore)
+                let detailVC = ProductDetailViewController(viewModel: detailVM)
+
+                // varsa indirim yüzdesi (yoksa kaldır)
+                // detailVC.setDiscountPercent(product.discountPercent)
+
+                self.navigationController?.pushViewController(detailVC, animated: true)
+            })
+            .disposed(by: disposeBag)
+
+        
         viewModel.errorMessage
             .compactMap { $0 }
             .observe(on: MainScheduler.instance)
