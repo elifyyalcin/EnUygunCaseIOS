@@ -159,6 +159,19 @@ final class ProductsPageVC: UIViewController, UIScrollViewDelegate {
             })
             .disposed(by: disposeBag)
 
+        viewModel.presentSortSheet
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] in
+                self?.presentSortBottomSheet()
+            })
+            .disposed(by: disposeBag)
+
+        viewModel.presentFilterSheet
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] in
+                self?.presentFilterBottomSheet()
+            })
+            .disposed(by: disposeBag)
         
         viewModel.errorMessage
             .compactMap { $0 }
@@ -167,7 +180,74 @@ final class ProductsPageVC: UIViewController, UIScrollViewDelegate {
                 self?.showSimpleAlert(message: msg)
             })
             .disposed(by: disposeBag)
+        
+        sortButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.viewModel.sortTapped()
+            })
+            .disposed(by: disposeBag)
     }
+    
+    private func presentSortBottomSheet() {
+        let options: [(String, SortOption)] = [
+            ("Varsayılan", .none),
+            ("Fiyat Artan", .priceAsc),
+            ("Fiyat Azalan", .priceDesc)
+        ]
+
+        let selectedTitle = options.first(where: { $0.1 == viewModel.selectedSort.value })?.0
+
+        let sheet = OptionSheetVC(
+            title: "Sırala",
+            options: options.map { $0.0 },
+            selected: selectedTitle,
+            onSelect: { [weak self] picked in
+                guard let self, let picked else { return }
+                let opt = options.first(where: { $0.0 == picked })?.1 ?? .none
+                self.viewModel.setSort(opt)
+            }
+        )
+
+        presentAsBottomSheet(sheet)
+    }
+
+    private func presentFilterBottomSheet() {
+        // "All" ekleyelim (nil => All)
+        let cats = viewModel.availableCategories.value
+        let options = ["Tümü"] + cats
+
+        let selected = viewModel.selectedCategory.value ?? "Tümü"
+
+        let sheet = OptionSheetVC(
+            title: "Kategori",
+            options: options,
+            selected: selected,
+            onSelect: { [weak self] picked in
+                guard let self, let picked else { return }
+                if picked == "Tümü" {
+                    self.viewModel.setCategory(nil)
+                } else {
+                    self.viewModel.setCategory(picked)
+                }
+            }
+        )
+
+        presentAsBottomSheet(sheet)
+    }
+
+    private func presentAsBottomSheet(_ vc: UIViewController) {
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .pageSheet
+
+        if let sheet = nav.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 16
+        }
+
+        present(nav, animated: true)
+    }
+
 
     private func showSimpleAlert(message: String) {
         let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)

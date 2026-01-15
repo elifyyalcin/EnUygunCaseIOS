@@ -31,6 +31,7 @@ struct Product: Decodable, Equatable {
     let discountPercentage: Double?
     let thumbnail: String?
     let images: [String]?
+    let category: String?
 }
 
 // MARK: - Basket Item Model

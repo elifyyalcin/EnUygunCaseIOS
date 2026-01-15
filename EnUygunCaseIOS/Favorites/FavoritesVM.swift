@@ -10,8 +10,8 @@ import RxSwift
 import RxCocoa
 
 protocol FavoritesVMType {
-    var items: BehaviorRelay<[Product]> { get }      // collection datası
-    var emptyText: BehaviorRelay<String?> { get }    // "Favori yok" mesajı
+    var items: BehaviorRelay<[Product]> { get }
+    var emptyText: BehaviorRelay<String?> { get }
 
     func load()
     func removeFavorite(productId: String)
@@ -95,7 +95,6 @@ final class FavoritesVM: FavoritesVMType {
     }
 
     private func applyFavorites(favIds: Set<String>) {
-        // cache boşsa kart gösteremezsin (sadece empty state)
         guard !allProductsCache.isEmpty else {
             let isEmpty = favIds.isEmpty
             items.accept([])

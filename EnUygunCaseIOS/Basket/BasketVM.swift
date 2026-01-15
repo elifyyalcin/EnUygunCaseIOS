@@ -15,7 +15,7 @@ protocol BasketStoreType {
 
     func add(product: BasketProductSnapshot, qty: Int) -> Observable<[BasketLine]>
     func increase(productId: String) -> Observable<[BasketLine]>
-    func decrease(productId: String) -> Observable<[BasketLine]> // 0 olursa siler
+    func decrease(productId: String) -> Observable<[BasketLine]>
     func remove(productId: String) -> Observable<[BasketLine]>
     func clear() -> Observable<[BasketLine]>
 }
@@ -155,12 +155,11 @@ final class BasketVM: BasketVMType {
     func remove(productId: String)   { store.remove(productId: productId).subscribe().disposed(by: disposeBag) }
 
     private func recalculate(_ lines: [BasketLine]) {
-        // Price: oldPrice varsa oldPrice * qty, yoksa price * qty
         let price = lines.reduce(0.0) { acc, line in
             let base = line.product.oldPrice ?? line.product.price
             return acc + Double(line.quantity) * base
         }
-        // Discount: (old - new) * qty
+
         let discount = lines.reduce(0.0) { acc, line in
             return acc + Double(line.quantity) * line.product.discountAmountPerItem
         }

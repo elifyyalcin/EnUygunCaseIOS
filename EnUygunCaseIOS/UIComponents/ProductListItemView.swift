@@ -101,7 +101,6 @@ final class ProductListItemView: UIView {
             return
         }
 
-        // Cache varsa direkt bas
         let key = urlString as NSString
         if let cached = Self.imageCache.object(forKey: key) {
             productImageView.image = cached

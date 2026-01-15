@@ -9,20 +9,42 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-// MARK: - ViewModel Protocol
+enum SortOption: Equatable {
+    case none
+    case priceAsc
+    case priceDesc
+
+    var title: String {
+        switch self {
+        case .none: return "Varsayılan"
+        case .priceAsc: return "Fiyat Artan"
+        case .priceDesc: return "Fiyat Azalan"
+        }
+    }
+}
 
 protocol ProductsPageVMType {
     var products: BehaviorRelay<[Product]> { get }
     var isLoading: BehaviorRelay<Bool> { get }
     var errorMessage: BehaviorRelay<String?> { get }
     var currentQuery: BehaviorRelay<String> { get }
-    
+
+    var availableCategories: BehaviorRelay<[String]> { get }
+    var selectedCategory: BehaviorRelay<String?> { get }
+    var selectedSort: BehaviorRelay<SortOption> { get }
+
+    var presentSortSheet: PublishRelay<Void> { get }
+    var presentFilterSheet: PublishRelay<Void> { get }
+
     func loadInitial()
     func updateQuery(_ query: String)
-    func filterTapped()
-}
 
-// MARK: - ViewModel Implementation
+    func sortTapped()
+    func filterTapped()
+
+    func setSort(_ option: SortOption)
+    func setCategory(_ category: String?)
+}
 
 final class ProductsPageVM: ProductsPageVMType {
 
@@ -30,50 +52,65 @@ final class ProductsPageVM: ProductsPageVMType {
     let isLoading = BehaviorRelay<Bool>(value: false)
     let errorMessage = BehaviorRelay<String?>(value: nil)
     let currentQuery = BehaviorRelay<String>(value: "")
+
+    let availableCategories = BehaviorRelay<[String]>(value: [])
+    let selectedCategory = BehaviorRelay<String?>(value: nil)
+    let selectedSort = BehaviorRelay<SortOption>(value: .none)
+
+    let presentSortSheet = PublishRelay<Void>()
+    let presentFilterSheet = PublishRelay<Void>()
+
     private let service: ProductsServiceType
     private let disposeBag = DisposeBag()
-
-    // Yeni istek gelince eskisini iptal etmek için
     private let requestDisposable = SerialDisposable()
+    private let allProducts = BehaviorRelay<[Product]>(value: [])
 
     init(service: ProductsServiceType) {
         self.service = service
+
+        Observable.combineLatest(selectedCategory, selectedSort)
+            .subscribe(onNext: { [weak self] _, _ in
+                self?.applyCategoryAndSort()
+            })
+            .disposed(by: disposeBag)
     }
 
-    // İlk açılış
     func loadInitial() {
         currentQuery.accept("")
-        fetchProducts() // tüm ürünleri yükle
+        fetchProducts()
     }
 
-    // Search input değişince
     func updateQuery(_ query: String) {
         currentQuery.accept(query)
         fetchProducts()
     }
 
-    // Filter butonu (şimdilik yok)
-    func filterTapped() {
-        errorMessage.accept("Filter ekranı daha sonra eklenecek.")
+    func sortTapped() {
+        presentSortSheet.accept(())
     }
 
-    // MARK: - Fetch
+    func filterTapped() {
+        presentFilterSheet.accept(())
+    }
+
+    func setSort(_ option: SortOption) {
+        selectedSort.accept(option)
+    }
+
+    func setCategory(_ category: String?) {
+        selectedCategory.accept(category)
+    }
 
     private func fetchProducts() {
-
-        // UI state reset
         isLoading.accept(true)
         errorMessage.accept(nil)
-        requestDisposable.disposable.dispose() // Eski request varsa iptal et
+        requestDisposable.disposable.dispose()
 
         let q = currentQuery.value.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        let request: Observable<[Product]>
-        if q.isEmpty {
-            request = service.fetchAll() // Search yok tüm ürünler
-        } else {
-            request = service.search(query: q) // Search var search endpoint
-        }
+        let request: Observable<[Product]> = q.isEmpty
+        ? service.fetchAll()
+        : service.search(query: q)
 
         let disposable = request
             .observe(on: MainScheduler.instance)
@@ -81,12 +118,14 @@ final class ProductsPageVM: ProductsPageVMType {
                 onNext: { [weak self] list in
                     guard let self else { return }
                     self.isLoading.accept(false)
-                    self.products.accept(list)
+
+                    self.allProducts.accept(list)
+                    self.updateCategories(from: list)
+                    self.applyCategoryAndSort()
                 },
                 onError: { [weak self] error in
                     guard let self else { return }
                     self.isLoading.accept(false)
-
                     let ns = error as NSError
                     self.errorMessage.accept("Veri alınamadı: \(ns.localizedDescription)")
                 }
@@ -95,5 +134,34 @@ final class ProductsPageVM: ProductsPageVMType {
         requestDisposable.disposable = disposable
         disposable.disposed(by: disposeBag)
     }
+
+    private func updateCategories(from list: [Product]) {
+        let cats = Array(Set(list.map { $0.category ?? "" })).sorted()
+        availableCategories.accept(cats)
+
+        if let sel = selectedCategory.value, cats.contains(sel) == false {
+            selectedCategory.accept(nil)
+        }
+    }
+
+    private func applyCategoryAndSort() {
+        var result = allProducts.value
+
+        if let cat = selectedCategory.value {
+            result = result.filter { $0.category == cat }
+        }
+
+        switch selectedSort.value {
+        case .none:
+            break
+        case .priceAsc:
+            result = result.sorted { $0.price < $1.price }
+        case .priceDesc:
+            result = result.sorted { $0.price > $1.price }
+        }
+
+        products.accept(result)
+    }
 }
+
 
