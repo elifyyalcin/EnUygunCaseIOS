@@ -6,14 +6,148 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
-class ProductsPageVC: UIViewController {
+final class ProductsPageVC: UIViewController, UIScrollViewDelegate {
 
+    @IBOutlet private weak var titleLabel: UILabel!
+    @IBOutlet private weak var totalLabel: UILabel!
+    @IBOutlet private weak var searchTextField: UITextField!
+    @IBOutlet private weak var filterButton: UIButton!
+    @IBOutlet private weak var sortButton: UIButton!
+    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var searchContainerView: UIView!
+    @IBOutlet private weak var searchField: UISearchTextField!
+
+    private let viewModel: ProductsPageVMType
+    private let disposeBag = DisposeBag()
+
+    init(viewModel: ProductsPageVMType) {
+        self.viewModel = viewModel
+        super.init(nibName: "ProductsPageVC", bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        setupUI()
+        setupTable()
+        bind()
+        viewModel.loadInitial()
     }
 
+    private func setupUI() {
+        view.backgroundColor = .systemBackground
+        titleLabel.text = "Ürünler"
 
+        searchContainerView.backgroundColor = .white
+        searchContainerView.layer.cornerRadius = 18
+        searchContainerView.layer.borderWidth = 1
+        searchContainerView.layer.borderColor = UIColor.systemGray3.cgColor
+        searchContainerView.layer.masksToBounds = true
+
+        searchTextField.borderStyle = .none
+        searchTextField.backgroundColor = .clear
+        searchTextField.placeholder = "Search Product"
+        searchTextField.clearButtonMode = .whileEditing
+        searchTextField.autocorrectionType = .no
+        searchTextField.autocapitalizationType = .none
+        searchTextField.returnKeyType = .search
+        searchTextField.font = .systemFont(ofSize: 16, weight: .regular)
+
+        stylePillButton(filterButton, title: "Filter", systemImage: "line.3.horizontal.decrease")
+        stylePillButton(sortButton, title: "Sort", systemImage: "arrow.up.arrow.down")
+    }
+
+    private func stylePillButton(_ button: UIButton, title: String, systemImage: String) {
+        var config = UIButton.Configuration.plain()
+        config.title = title
+        config.image = UIImage(systemName: systemImage)
+        config.baseForegroundColor = .systemGray
+
+        config.imagePlacement = .leading
+        config.imagePadding = 4
+        config.contentInsets = NSDirectionalEdgeInsets(top: 6, leading: 10, bottom: 6, trailing: 10)
+
+        config.attributedTitle = AttributedString(
+            title,
+            attributes: AttributeContainer([
+                .font: UIFont.systemFont(ofSize: 11, weight: .medium)
+            ])
+        )
+
+        button.configuration = config
+
+        button.backgroundColor = .white
+        button.layer.cornerRadius = 16
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.systemGray3.cgColor
+        button.layer.masksToBounds = true
+    }
+
+    private func setupTable() {
+        tableView.separatorStyle = .none
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 110
+        tableView.backgroundColor = .clear
+
+        tableView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
+
+        tableView.register(ProductListItemCell.self,
+                           forCellReuseIdentifier: ProductListItemCell.reuseID)
+    }
+
+    private func bind() {
+        searchTextField.rx.text.orEmpty
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .distinctUntilChanged()
+            .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] query in
+                self?.viewModel.updateQuery(query)
+            })
+            .disposed(by: disposeBag)
+
+        filterButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.viewModel.filterTapped()
+            })
+            .disposed(by: disposeBag)
+
+        viewModel.products
+            .observe(on: MainScheduler.instance)
+            .bind(to: tableView.rx.items(
+                cellIdentifier: ProductListItemCell.reuseID,
+                cellType: ProductListItemCell.self
+            )) { _, product, cell in
+                cell.configure(product: product)
+            }
+            .disposed(by: disposeBag)
+
+        viewModel.products
+            .map { "(Toplam \($0.count) adet)" }
+            .distinctUntilChanged()
+            .bind(to: totalLabel.rx.text)
+            .disposed(by: disposeBag)
+
+        viewModel.errorMessage
+            .compactMap { $0 }
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] msg in
+                self?.showSimpleAlert(message: msg)
+            })
+            .disposed(by: disposeBag)
+    }
+
+    private func showSimpleAlert(message: String) {
+        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
 }
+
 

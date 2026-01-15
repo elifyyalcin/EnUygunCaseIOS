@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		02E6E10D2F17DCDD007BCB4D /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 02E6E10C2F17DCDD007BCB4D /* RxCocoa */; };
+		02E6E10F2F17DCDD007BCB4D /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 02E6E10E2F17DCDD007BCB4D /* RxRelay */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		02E6E0CC2F17CF35007BCB4D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -65,6 +70,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				02E6E10F2F17DCDD007BCB4D /* RxRelay in Frameworks */,
+				02E6E10D2F17DCDD007BCB4D /* RxCocoa in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +132,8 @@
 			);
 			name = EnUygunCaseIOS;
 			packageProductDependencies = (
+				02E6E10C2F17DCDD007BCB4D /* RxCocoa */,
+				02E6E10E2F17DCDD007BCB4D /* RxRelay */,
 			);
 			productName = EnUygunCaseIOS;
 			productReference = 02E6E0B52F17CF34007BCB4D /* EnUygunCaseIOS.app */;
@@ -208,6 +217,9 @@
 			);
 			mainGroup = 02E6E0AC2F17CF34007BCB4D;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				02E6E10B2F17DCDD007BCB4D /* XCRemoteSwiftPackageReference "RxSwift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 02E6E0B62F17CF34007BCB4D /* Products */;
 			projectDirPath = "";
@@ -294,7 +306,6 @@
 				INFOPLIST_FILE = EnUygunCaseIOS/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -322,7 +333,6 @@
 				INFOPLIST_FILE = EnUygunCaseIOS/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -571,6 +581,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		02E6E10B2F17DCDD007BCB4D /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.9.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		02E6E10C2F17DCDD007BCB4D /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 02E6E10B2F17DCDD007BCB4D /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		02E6E10E2F17DCDD007BCB4D /* RxRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 02E6E10B2F17DCDD007BCB4D /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxRelay;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 02E6E0AD2F17CF34007BCB4D /* Project object */;
 }

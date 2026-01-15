@@ -1,18 +1,139 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13142" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12042"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductsPageVC" customModule="EnUygunCaseIOS" customModuleProvider="target">
+            <connections>
+                <outlet property="filterButton" destination="ytF-sZ-239" id="GQI-Zn-Jkq"/>
+                <outlet property="searchContainerView" destination="yG4-Lm-GlL" id="Ub8-yX-cii"/>
+                <outlet property="searchField" destination="LZl-g2-qSJ" id="QlM-rw-GjR"/>
+                <outlet property="searchTextField" destination="LZl-g2-qSJ" id="Nm4-Hb-IUc"/>
+                <outlet property="sortButton" destination="a8e-85-Rsc" id="AWx-rK-g3v"/>
+                <outlet property="tableView" destination="Ype-fh-MxA" id="vjh-nK-HYf"/>
+                <outlet property="titleLabel" destination="LrT-sF-LwM" id="bGa-QM-PPp"/>
+                <outlet property="totalLabel" destination="ktD-yg-2GN" id="AMi-SE-dW4"/>
+                <outlet property="view" destination="iN0-l3-epB" id="ph8-1j-U63"/>
+            </connections>
+        </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="e4w-gy-ALv" userLabel="MainStack">
+                    <rect key="frame" x="16" y="118" width="361" height="666"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="tOd-Fi-lTG">
+                            <rect key="frame" x="0.0" y="0.0" width="361" height="20.333333333333332"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" text="Ürünler" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LrT-sF-LwM" userLabel="title">
+                                    <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="20.333333333333332"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(Toplam 568 adet)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ktD-yg-2GN" userLabel="total">
+                                    <rect key="frame" x="64.333333333333343" y="0.0" width="296.66666666666663" height="20.333333333333332"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                        </stackView>
+                        <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" alignment="center" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="e2D-9q-rKc">
+                            <rect key="frame" x="0.0" y="36.333333333333314" width="361" height="629.66666666666674"/>
+                            <subviews>
+                                <view contentMode="scaleToFill" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="yG4-Lm-GlL" userLabel="SearchContainerView">
+                                    <rect key="frame" x="0.0" y="0.0" width="196" height="629.66666666666663"/>
+                                    <subviews>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="magnifyingglass" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Jsr-9U-C9v">
+                                            <rect key="frame" x="16" y="308" width="16" height="14.333333333333314"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="16" id="RuW-zh-Lza"/>
+                                                <constraint firstAttribute="height" constant="16" id="XLH-vf-mjw"/>
+                                            </constraints>
+                                        </imageView>
+                                        <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search Product" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="LZl-g2-qSJ">
+                                            <rect key="frame" x="40" y="305.66666666666663" width="140" height="18.666666666666686"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </textField>
+                                    </subviews>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    <constraints>
+                                        <constraint firstItem="LZl-g2-qSJ" firstAttribute="centerY" secondItem="yG4-Lm-GlL" secondAttribute="centerY" id="QU7-oO-JzA"/>
+                                        <constraint firstItem="Jsr-9U-C9v" firstAttribute="leading" secondItem="yG4-Lm-GlL" secondAttribute="leading" constant="16" id="bsX-Sl-Ogj"/>
+                                        <constraint firstItem="Jsr-9U-C9v" firstAttribute="centerY" secondItem="yG4-Lm-GlL" secondAttribute="centerY" id="f26-LR-62l"/>
+                                        <constraint firstItem="LZl-g2-qSJ" firstAttribute="leading" secondItem="Jsr-9U-C9v" secondAttribute="trailing" constant="8" id="fDs-Zt-qYu"/>
+                                        <constraint firstAttribute="trailing" secondItem="LZl-g2-qSJ" secondAttribute="trailing" constant="16" id="hpH-fa-lYu"/>
+                                    </constraints>
+                                </view>
+                                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ytF-sZ-239">
+                                    <rect key="frame" x="208" y="297.66666666666663" width="73.333333333333314" height="34.333333333333314"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="bsw-3b-dKV"/>
+                                    </constraints>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" image="checklist.checked.rtl" catalog="system" title="Filter">
+                                        <fontDescription key="titleFontDescription" name="Helvetica" family="Helvetica" pointSize="9"/>
+                                    </buttonConfiguration>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a8e-85-Rsc">
+                                    <rect key="frame" x="293.33333333333331" y="297.66666666666663" width="67.666666666666686" height="34.333333333333314"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="tIr-3q-eLX"/>
+                                    </constraints>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" image="line.3.horizontal.decrease" catalog="system">
+                                        <attributedString key="attributedTitle">
+                                            <fragment content="Sort">
+                                                <attributes>
+                                                    <font key="NSFont" size="9" name="Helvetica"/>
+                                                    <font key="NSOriginalFont" size="12" name="Helvetica"/>
+                                                </attributes>
+                                            </fragment>
+                                        </attributedString>
+                                    </buttonConfiguration>
+                                </button>
+                            </subviews>
+                            <constraints>
+                                <constraint firstItem="yG4-Lm-GlL" firstAttribute="top" secondItem="e2D-9q-rKc" secondAttribute="top" id="NFo-PN-qGb"/>
+                                <constraint firstAttribute="bottom" secondItem="yG4-Lm-GlL" secondAttribute="bottom" id="yZa-Pm-O7y"/>
+                            </constraints>
+                        </stackView>
+                    </subviews>
+                </stackView>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="250" placeholderIntrinsicWidth="361" placeholderIntrinsicHeight="128" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Ype-fh-MxA">
+                    <rect key="frame" x="0.0" y="800" width="393" height="36"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                </tableView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="7bL-Ff-OJz"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="e4w-gy-ALv" firstAttribute="top" secondItem="7bL-Ff-OJz" secondAttribute="top" id="F1w-Uc-Wrd"/>
+                <constraint firstItem="Ype-fh-MxA" firstAttribute="top" secondItem="e4w-gy-ALv" secondAttribute="bottom" constant="16" id="QYN-Ow-er1"/>
+                <constraint firstItem="Ype-fh-MxA" firstAttribute="leading" secondItem="7bL-Ff-OJz" secondAttribute="leading" id="eQ4-gR-AvJ"/>
+                <constraint firstAttribute="bottom" secondItem="Ype-fh-MxA" secondAttribute="bottom" constant="16" id="j6q-AJ-3JL"/>
+                <constraint firstItem="7bL-Ff-OJz" firstAttribute="trailing" secondItem="e4w-gy-ALv" secondAttribute="trailing" constant="16" id="jIS-9Y-lof"/>
+                <constraint firstItem="7bL-Ff-OJz" firstAttribute="trailing" secondItem="Ype-fh-MxA" secondAttribute="trailing" id="rER-CJ-Qq1"/>
+                <constraint firstItem="e4w-gy-ALv" firstAttribute="leading" secondItem="7bL-Ff-OJz" secondAttribute="leading" constant="16" id="uR6-1t-Az9"/>
+            </constraints>
+            <point key="canvasLocation" x="21" y="20"/>
         </view>
     </objects>
+    <resources>
+        <image name="checklist.checked.rtl" catalog="system" width="128" height="107"/>
+        <image name="line.3.horizontal.decrease" catalog="system" width="128" height="73"/>
+        <image name="magnifyingglass" catalog="system" width="128" height="117"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>
