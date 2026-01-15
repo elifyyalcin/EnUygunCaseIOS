@@ -13,8 +13,10 @@
                 <outlet property="checkoutButton" destination="5gz-ET-ds5" id="jz9-bM-tma"/>
                 <outlet property="discountLeftLabel" destination="xzt-nh-Nck" id="5Ro-LP-o5Q"/>
                 <outlet property="discountValueLabel" destination="dxT-Qz-0Gs" id="vbl-TG-SJ5"/>
+                <outlet property="emptyLabel" destination="7aD-Mv-d4v" id="dxf-FD-6cP"/>
                 <outlet property="priceLeftLabel" destination="hi6-bZ-T82" id="ILH-zO-PRO"/>
                 <outlet property="priceValueLabel" destination="UBz-Te-yBD" id="AZ5-aK-dbf"/>
+                <outlet property="summaryContainerView" destination="FVy-Lj-5Bq" id="KsE-It-riz"/>
                 <outlet property="tableView" destination="thF-Co-LoH" id="0qh-Xw-Jm7"/>
                 <outlet property="totalLeftLabel" destination="4IZ-Wh-yhm" id="5Jg-FZ-zsE"/>
                 <outlet property="totalValueLabel" destination="nf6-zs-226" id="1sv-RF-slD"/>
@@ -43,6 +45,12 @@
                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" priority="250" constant="1" id="rze-qk-gdw"/>
                             </constraints>
                         </view>
+                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7aD-Mv-d4v">
+                            <rect key="frame" x="0.0" y="317" width="361" height="0.0"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                         <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FVy-Lj-5Bq" userLabel="SummaryRow">
                             <rect key="frame" x="0.0" y="497" width="361" height="73"/>
                             <subviews>
@@ -107,6 +115,10 @@
                             </buttonConfiguration>
                         </button>
                     </subviews>
+                    <constraints>
+                        <constraint firstItem="7aD-Mv-d4v" firstAttribute="centerX" secondItem="gL1-C7-n3e" secondAttribute="centerX" id="MpY-QB-nsv"/>
+                        <constraint firstItem="7aD-Mv-d4v" firstAttribute="centerY" secondItem="gL1-C7-n3e" secondAttribute="centerY" id="Sjm-pH-Qb7"/>
+                    </constraints>
                 </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>

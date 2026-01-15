@@ -16,18 +16,20 @@ final class BasketVC: UIViewController {
     @IBOutlet private weak var priceLeftLabel: UILabel!
     @IBOutlet private weak var discountLeftLabel: UILabel!
     @IBOutlet private weak var totalLeftLabel: UILabel!
-
+    @IBOutlet private weak var emptyLabel: UILabel!
     @IBOutlet private weak var priceValueLabel: UILabel!
     @IBOutlet private weak var discountValueLabel: UILabel!
     @IBOutlet private weak var totalValueLabel: UILabel!
-
+    @IBOutlet private weak var summaryContainerView: UIStackView!
     @IBOutlet private weak var checkoutButton: UIButton!
 
+    private let basketStore: BasketStoreType
     private let viewModel: BasketVMType
     private let disposeBag = DisposeBag()
 
-    init(viewModel: BasketVMType) {
+    init(viewModel: BasketVMType, basketStore: BasketStoreType) {
         self.viewModel = viewModel
+        self.basketStore = basketStore
         super.init(nibName: "BasketVC", bundle: nil)
     }
     
@@ -94,7 +96,29 @@ final class BasketVC: UIViewController {
 
         checkoutButton.rx.tap
             .subscribe(onNext: { [weak self] in
-                self?.showSimpleAlert(message: "Checkout (case) - not implemented")
+                guard let self else { return }
+                let vm = CheckoutVM(basketStore: self.basketStore)
+                let vc = CheckoutVC(viewModel: vm)
+                self.navigationController?.pushViewController(vc, animated: true)
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.lines
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] lines in
+                guard let self else { return }
+                let isEmpty = lines.isEmpty
+
+                self.tableView.isHidden = isEmpty
+                self.summaryContainerView.isHidden = isEmpty
+
+                self.checkoutButton.isHidden = isEmpty
+                self.checkoutButton.isEnabled = !isEmpty
+
+                self.emptyLabel.isHidden = !isEmpty
+                if isEmpty {
+                    self.emptyLabel.text = "Sepetiniz boş"
+                }
             })
             .disposed(by: disposeBag)
     }

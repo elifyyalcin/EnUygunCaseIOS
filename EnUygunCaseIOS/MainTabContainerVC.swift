@@ -37,7 +37,8 @@ final class MainTabChildFactory: MainTabChildFactoryType {
 
     func makeBasket() -> UIViewController {
         let vm = BasketVM(store: basketStore)
-        return BasketVC(viewModel: vm)
+        let vc = BasketVC(viewModel: vm, basketStore: basketStore)
+        return vc
     }
 }
 

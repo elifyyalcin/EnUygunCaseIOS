@@ -141,16 +141,9 @@
                                     </constraints>
                                     <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="plain">
+                                    <buttonConfiguration key="configuration" style="plain" title="ADD TO CHART">
                                         <backgroundConfiguration key="background" cornerRadius="16"/>
-                                        <attributedString key="attributedTitle">
-                                            <fragment content="Button">
-                                                <attributes>
-                                                    <font key="NSFont" size="18" name="Helvetica-Bold"/>
-                                                    <font key="NSOriginalFont" size="12" name="Helvetica"/>
-                                                </attributes>
-                                            </fragment>
-                                        </attributedString>
+                                        <fontDescription key="titleFontDescription" name="Helvetica" family="Helvetica" pointSize="12"/>
                                     </buttonConfiguration>
                                 </button>
                             </subviews>
