@@ -33,6 +33,34 @@ struct Product: Decodable, Equatable {
     let images: [String]?
 }
 
+// MARK: - Basket Item Model
+struct BasketItem: Codable, Equatable {
+    let productId: String
+    var quantity: Int
+
+    static func ==(lhs: BasketItem, rhs: BasketItem) -> Bool {
+        lhs.productId == rhs.productId && lhs.quantity == rhs.quantity
+    }
+}
+
+struct BasketProductSnapshot: Codable, Equatable {
+    let id: String
+    let title: String
+    let price: Double
+    let oldPrice: Double?
+    let imageURL: String?
+
+    var discountAmountPerItem: Double {
+        guard let oldPrice else { return 0 }
+        return max(0, oldPrice - price)
+    }
+}
+
+struct BasketLine: Codable, Equatable {
+    let product: BasketProductSnapshot
+    var quantity: Int
+}
+
 // MARK: - Service Implementation
 
 final class ProductsService: ProductsServiceType {

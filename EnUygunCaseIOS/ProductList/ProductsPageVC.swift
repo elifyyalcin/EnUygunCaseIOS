@@ -23,13 +23,18 @@ final class ProductsPageVC: UIViewController, UIScrollViewDelegate {
     private let viewModel: ProductsPageVMType
     private let disposeBag = DisposeBag()
     private let favoritesStore: FavoritesStoreType
+    private let basketStore: BasketStoreType
 
+    init(viewModel: ProductsPageVMType,
+         favoritesStore: FavoritesStoreType,
+         basketStore: BasketStoreType) {
 
-    init(viewModel: ProductsPageVMType, favoritesStore: FavoritesStoreType) {
         self.viewModel = viewModel
         self.favoritesStore = favoritesStore
+        self.basketStore = basketStore
         super.init(nibName: "ProductsPageVC", bundle: nil)
     }
+
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -148,10 +153,7 @@ final class ProductsPageVC: UIViewController, UIScrollViewDelegate {
                 self.tableView.deselectRow(at: indexPath, animated: true)
 
                 let detailVM = ProductDetailViewModel(product: product, favoritesStore: self.favoritesStore)
-                let detailVC = ProductDetailViewController(viewModel: detailVM)
-
-                // varsa indirim yüzdesi (yoksa kaldır)
-                // detailVC.setDiscountPercent(product.discountPercent)
+                let detailVC = ProductDetailViewController(viewModel: detailVM, basketStore: basketStore)
 
                 self.navigationController?.pushViewController(detailVC, animated: true)
             })

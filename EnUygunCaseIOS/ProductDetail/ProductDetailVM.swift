@@ -142,3 +142,23 @@ final class ProductDetailViewModel {
         selectedImageIndex.accept(max(0, index))
     }
 }
+
+extension ProductDetailViewModel {
+    func basketSnapshot() -> BasketProductSnapshot {
+        var oldPrice: Double? = 0
+        let discount = product.discountPercentage ?? 0
+        if discount > 0 {
+            let current = Double(product.price)
+            let old = current / (1.0 - (discount / 100.0))
+            oldPrice = old
+        }
+        
+        return BasketProductSnapshot(
+            id: String(product.id),
+            title: product.title,
+            price: product.price,
+            oldPrice: oldPrice,
+            imageURL: product.images?.first
+        )
+    }
+}

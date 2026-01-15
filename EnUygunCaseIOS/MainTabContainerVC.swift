@@ -18,12 +18,13 @@ protocol MainTabChildFactoryType {
 final class MainTabChildFactory: MainTabChildFactoryType {
 
     private let favoritesStore: FavoritesStoreType = UserDefaultsFavoritesStore()
+    private let basketStore: BasketStoreType = UserDefaultsBasketStore()
 
     func makeHome() -> UIViewController {
         let service = ProductsService()
         let vm = ProductsPageVM(service: service)
 
-        return ProductsPageVC(viewModel: vm, favoritesStore: favoritesStore)
+        return ProductsPageVC(viewModel: vm, favoritesStore: favoritesStore, basketStore: basketStore)
     }
 
     func makeFavorites() -> UIViewController {
@@ -31,7 +32,8 @@ final class MainTabChildFactory: MainTabChildFactoryType {
     }
 
     func makeBasket() -> UIViewController {
-        return PlaceholderVC(titleText: "Basket")
+        let vm = BasketVM(store: basketStore)
+        return BasketVC(viewModel: vm)
     }
 }
 

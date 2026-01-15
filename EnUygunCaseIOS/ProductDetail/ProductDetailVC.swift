@@ -21,14 +21,16 @@ final class ProductDetailViewController: UIViewController {
     @IBOutlet private weak var chartButton: UIButton!
 
     private let viewModel: ProductDetailViewModel
+    private let basketStore: BasketStoreType
     private let disposeBag = DisposeBag()
 
     private var imageURLs: [URL] = []
 
     private let favButton = UIButton(type: .system)
 
-    init(viewModel: ProductDetailViewModel) {
+    init(viewModel: ProductDetailViewModel, basketStore: BasketStoreType) {
         self.viewModel = viewModel
+        self.basketStore = basketStore
         super.init(nibName: "ProductDetailVC", bundle: nil)
     }
 
@@ -42,6 +44,7 @@ final class ProductDetailViewController: UIViewController {
         setupUI()
         setupCollectionView()
         bindViewModel()
+        bindAddToCart()
     }
 
     override func viewDidLayoutSubviews() {
@@ -181,6 +184,31 @@ final class ProductDetailViewController: UIViewController {
         }
         discountBadgeLabel.isHidden = false
         discountBadgeLabel.text = "%\(percent)"
+    }
+    
+    private func bindAddToCart() {
+        chartButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self else { return }
+
+                // ✅ VM’den sepet için snapshot al
+                let snapshot = self.viewModel.basketSnapshot()
+
+                // ✅ sepete ekle
+                self.basketStore.add(product: snapshot, qty: 1)
+                    .observe(on: MainScheduler.instance)
+                    .subscribe(onNext: { _ in
+                        self.showSimpleAlert(message: "Added to cart")
+                    })
+                    .disposed(by: self.disposeBag)
+            })
+            .disposed(by: disposeBag)
+    }
+
+    private func showSimpleAlert(message: String) {
+        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 }
 
