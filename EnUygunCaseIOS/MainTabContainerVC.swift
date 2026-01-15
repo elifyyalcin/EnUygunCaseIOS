@@ -19,6 +19,7 @@ final class MainTabChildFactory: MainTabChildFactoryType {
 
     private let favoritesStore: FavoritesStoreType = UserDefaultsFavoritesStore()
     private let basketStore: BasketStoreType = UserDefaultsBasketStore()
+    private let productsService: ProductsServiceType = ProductsService()
 
     func makeHome() -> UIViewController {
         let service = ProductsService()
@@ -28,7 +29,10 @@ final class MainTabChildFactory: MainTabChildFactoryType {
     }
 
     func makeFavorites() -> UIViewController {
-        return PlaceholderVC(titleText: "Favorites")
+        let vm = FavoritesVM(favoritesStore: favoritesStore,
+                             basketStore: basketStore,
+                             productsService: productsService)
+        return FavoritesVC(viewModel: vm)
     }
 
     func makeBasket() -> UIViewController {

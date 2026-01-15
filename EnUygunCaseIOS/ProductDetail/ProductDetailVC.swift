@@ -191,10 +191,8 @@ final class ProductDetailViewController: UIViewController {
             .subscribe(onNext: { [weak self] in
                 guard let self else { return }
 
-                // ✅ VM’den sepet için snapshot al
                 let snapshot = self.viewModel.basketSnapshot()
 
-                // ✅ sepete ekle
                 self.basketStore.add(product: snapshot, qty: 1)
                     .observe(on: MainScheduler.instance)
                     .subscribe(onNext: { _ in
