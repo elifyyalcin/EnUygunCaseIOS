@@ -93,7 +93,25 @@ final class ProductDetailViewController: UIViewController {
         collectionView.delegate = self
     }
 
-    // MARK: - Binding
+    func setDiscountPercent(_ percent: Int?) {
+        guard let percent, percent > 0 else {
+            discountBadgeLabel.isHidden = true
+            return
+        }
+        discountBadgeLabel.isHidden = false
+        discountBadgeLabel.text = "%\(percent)"
+    }
+
+    private func showSimpleAlert(message: String) {
+        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+}
+
+// MARK: - Binding
+private extension ProductDetailViewController {
+
     private func bindViewModel() {
 
         viewModel.productTitle
@@ -159,8 +177,6 @@ final class ProductDetailViewController: UIViewController {
             })
             .disposed(by: disposeBag)
 
-        // MARK: - Inputs
-
         favButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 self?.viewModel.favTapped()
@@ -175,15 +191,6 @@ final class ProductDetailViewController: UIViewController {
                 self.viewModel.didChangeImageIndex(page)
             })
             .disposed(by: disposeBag)
-    }
-
-    func setDiscountPercent(_ percent: Int?) {
-        guard let percent, percent > 0 else {
-            discountBadgeLabel.isHidden = true
-            return
-        }
-        discountBadgeLabel.isHidden = false
-        discountBadgeLabel.text = "%\(percent)"
     }
     
     private func bindAddToCart() {
@@ -201,12 +208,6 @@ final class ProductDetailViewController: UIViewController {
                     .disposed(by: self.disposeBag)
             })
             .disposed(by: disposeBag)
-    }
-
-    private func showSimpleAlert(message: String) {
-        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
     }
 }
 

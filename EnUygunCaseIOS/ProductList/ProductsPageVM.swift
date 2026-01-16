@@ -9,20 +9,6 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-enum SortOption: Equatable {
-    case none
-    case priceAsc
-    case priceDesc
-
-    var title: String {
-        switch self {
-        case .none: return "Varsayılan"
-        case .priceAsc: return "Fiyat Artan"
-        case .priceDesc: return "Fiyat Azalan"
-        }
-    }
-}
-
 protocol ProductsPageVMType {
     var products: BehaviorRelay<[Product]> { get }
     var isLoading: BehaviorRelay<Bool> { get }
@@ -161,6 +147,20 @@ final class ProductsPageVM: ProductsPageVMType {
         }
 
         products.accept(result)
+    }
+}
+
+enum SortOption: Equatable {
+    case none
+    case priceAsc
+    case priceDesc
+
+    var title: String {
+        switch self {
+        case .none: return "Varsayılan"
+        case .priceAsc: return "Fiyat Artan"
+        case .priceDesc: return "Fiyat Azalan"
+        }
     }
 }
 

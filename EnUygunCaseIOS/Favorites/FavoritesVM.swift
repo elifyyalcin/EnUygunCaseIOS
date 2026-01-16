@@ -22,14 +22,12 @@ final class FavoritesVM: FavoritesVMType {
 
     let items = BehaviorRelay<[Product]>(value: [])
     let emptyText = BehaviorRelay<String?>(value: nil)
+    private var allProductsCache: [Product] = []
+    private let disposeBag = DisposeBag()
 
     private let favoritesStore: FavoritesStoreType
     private let basketStore: BasketStoreType
     private let productsService: ProductsServiceType
-
-    private let disposeBag = DisposeBag()
-
-    private var allProductsCache: [Product] = []
 
     init(favoritesStore: FavoritesStoreType,
          basketStore: BasketStoreType,
@@ -39,7 +37,6 @@ final class FavoritesVM: FavoritesVMType {
         self.basketStore = basketStore
         self.productsService = productsService
 
-        // Favoriler değişince UI datasını yenile
         favoritesStore.favoritesChanged
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] favIds in
@@ -59,7 +56,6 @@ final class FavoritesVM: FavoritesVMType {
                     self?.applyFavorites(favIds: self?.favoritesStore.currentFavorites() ?? [])
                 },
                 onError: { [weak self] _ in
-                    // servis hata verirse, en azından boş mesajı göster
                     self?.applyFavorites(favIds: self?.favoritesStore.currentFavorites() ?? [])
                 }
             )

@@ -109,7 +109,11 @@ final class ProductsPageVC: UIViewController, UIScrollViewDelegate {
         tableView.register(ProductListItemCell.self,
                            forCellReuseIdentifier: ProductListItemCell.reuseID)
     }
+}
 
+// MARK: - Bindings
+private extension ProductsPageVC {
+    
     private func bind() {
         searchTextField.rx.text.orEmpty
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -187,6 +191,10 @@ final class ProductsPageVC: UIViewController, UIScrollViewDelegate {
             })
             .disposed(by: disposeBag)
     }
+}
+
+// MARK: - Bottomsheets and alerts
+private extension ProductsPageVC {
     
     private func presentSortBottomSheet() {
         let options: [(String, SortOption)] = [
@@ -212,7 +220,6 @@ final class ProductsPageVC: UIViewController, UIScrollViewDelegate {
     }
 
     private func presentFilterBottomSheet() {
-        // "All" ekleyelim (nil => All)
         let cats = viewModel.availableCategories.value
         let options = ["Tümü"] + cats
 
