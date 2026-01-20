@@ -16,7 +16,6 @@ final class ProductListItemView: UIView {
     @IBOutlet private weak var priceLabel: UILabel!
     @IBOutlet private weak var oldPriceLabel: UILabel!
 
-    private var loadedView: UIView?
     private static let imageCache = NSCache<NSString, UIImage>()
     private var imageTask: URLSessionDataTask?
 
@@ -28,7 +27,6 @@ final class ProductListItemView: UIView {
         view.frame = bounds
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         addSubview(view)
-        loadedView = view
 
         setupUI()
     }
@@ -88,7 +86,7 @@ final class ProductListItemView: UIView {
         loadImage(from: product.thumbnail)
     }
 
-    // MARK: - Image Loading (Cache'li)
+    // MARK: - Image Loading
 
     private func loadImage(from urlString: String?) {
         // Eski task varsa iptal

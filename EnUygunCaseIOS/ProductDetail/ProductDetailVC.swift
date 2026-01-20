@@ -21,16 +21,14 @@ final class ProductDetailViewController: UIViewController {
     @IBOutlet private weak var chartButton: UIButton!
 
     private let viewModel: ProductDetailViewModel
-    private let basketStore: BasketStoreType
     private let disposeBag = DisposeBag()
 
     private var imageURLs: [URL] = []
 
     private let favButton = UIButton(type: .system)
 
-    init(viewModel: ProductDetailViewModel, basketStore: BasketStoreType) {
+    init(viewModel: ProductDetailViewModel) {
         self.viewModel = viewModel
-        self.basketStore = basketStore
         super.init(nibName: "ProductDetailVC", bundle: nil)
     }
 
@@ -93,15 +91,6 @@ final class ProductDetailViewController: UIViewController {
         collectionView.delegate = self
     }
 
-    func setDiscountPercent(_ percent: Int?) {
-        guard let percent, percent > 0 else {
-            discountBadgeLabel.isHidden = true
-            return
-        }
-        discountBadgeLabel.isHidden = false
-        discountBadgeLabel.text = "%\(percent)"
-    }
-
     private func showSimpleAlert(message: String) {
         let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
@@ -113,7 +102,6 @@ final class ProductDetailViewController: UIViewController {
 private extension ProductDetailViewController {
 
     private func bindViewModel() {
-
         viewModel.productTitle
             .subscribe(onNext: { [weak self] t in
                 self?.navigationItem.title = t
@@ -147,10 +135,22 @@ private extension ProductDetailViewController {
                     self.oldPriceLabel.isHidden = true
                     self.oldPriceLabel.attributedText = nil
                 }
-
-                self.discountBadgeLabel.isHidden = true
             })
             .disposed(by: disposeBag)
+        
+        viewModel.discountPercentText
+            .subscribe(onNext: { [weak self] text in
+                guard let self else { return }
+                if let text {
+                    self.discountBadgeLabel.isHidden = false
+                    self.discountBadgeLabel.text = text
+                } else {
+                    self.discountBadgeLabel.isHidden = true
+                    self.discountBadgeLabel.text = nil
+                }
+            })
+            .disposed(by: disposeBag)
+
 
         viewModel.imageURLs
             .subscribe(onNext: { [weak self] urls in
@@ -196,16 +196,14 @@ private extension ProductDetailViewController {
     private func bindAddToCart() {
         chartButton.rx.tap
             .subscribe(onNext: { [weak self] in
-                guard let self else { return }
+                self?.viewModel.addToCartTapped(qty: 1)
+            })
+            .disposed(by: disposeBag)
 
-                let snapshot = self.viewModel.basketSnapshot()
-
-                self.basketStore.add(product: snapshot, qty: 1)
-                    .observe(on: MainScheduler.instance)
-                    .subscribe(onNext: { _ in
-                        self.showSimpleAlert(message: "Added to cart")
-                    })
-                    .disposed(by: self.disposeBag)
+        viewModel.toastMessage
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] msg in
+                self?.showSimpleAlert(message: msg)
             })
             .disposed(by: disposeBag)
     }

@@ -18,7 +18,6 @@ final class ProductsPageVC: UIViewController, UIScrollViewDelegate {
     @IBOutlet private weak var sortButton: UIButton!
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var searchContainerView: UIView!
-    @IBOutlet private weak var searchField: UISearchTextField!
 
     private let viewModel: ProductsPageVMType
     private let disposeBag = DisposeBag()
@@ -156,8 +155,13 @@ private extension ProductsPageVC {
 
                 self.tableView.deselectRow(at: indexPath, animated: true)
 
-                let detailVM = ProductDetailViewModel(product: product, favoritesStore: self.favoritesStore)
-                let detailVC = ProductDetailViewController(viewModel: detailVM, basketStore: basketStore)
+                let detailVM = ProductDetailViewModel(
+                    product: product,
+                    favoritesStore: self.favoritesStore,
+                    basketStore: self.basketStore
+                )
+                let detailVC = ProductDetailViewController(viewModel: detailVM)
+
 
                 self.navigationController?.pushViewController(detailVC, animated: true)
             })
@@ -226,7 +230,7 @@ private extension ProductsPageVC {
         let selected = viewModel.selectedCategory.value ?? "Tümü"
 
         let sheet = OptionSheetVC(
-            title: "Kategori",
+            title: "Filtrele",
             options: options,
             selected: selected,
             onSelect: { [weak self] picked in

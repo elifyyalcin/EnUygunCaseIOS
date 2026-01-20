@@ -70,12 +70,10 @@ final class BasketVC: UIViewController {
     }
 
     private func bind() {
-        // Summary
         viewModel.priceText.bind(to: priceValueLabel.rx.text).disposed(by: disposeBag)
         viewModel.discountText.bind(to: discountValueLabel.rx.text).disposed(by: disposeBag)
         viewModel.totalText.bind(to: totalValueLabel.rx.text).disposed(by: disposeBag)
 
-        // Table items
         viewModel.lines
             .observe(on: MainScheduler.instance)
             .bind(to: tableView.rx.items(cellIdentifier: BasketItemCell.reuseID, cellType: BasketItemCell.self)) { [weak self] row, line, cell in

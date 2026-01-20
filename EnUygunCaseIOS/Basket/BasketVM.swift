@@ -72,8 +72,20 @@ final class BasketVM: BasketVMType {
 }
 
 enum Money {
+    private static let formatter: NumberFormatter = {
+        let f = NumberFormatter()
+        f.numberStyle = .currency
+        f.locale = Locale(identifier: "tr_TR")
+
+        f.currencyCode = "TRY"
+        f.currencySymbol = "₺"
+
+        f.maximumFractionDigits = 2
+        f.minimumFractionDigits = 2
+        return f
+    }()
+
     static func tl(_ value: Double) -> String {
-        let rounded = Int(value.rounded())
-        return "\(rounded) TL"
+        formatter.string(from: NSNumber(value: value)) ?? "₺0,00"
     }
 }

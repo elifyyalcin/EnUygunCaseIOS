@@ -35,14 +35,6 @@ struct Product: Decodable, Equatable {
 }
 
 // MARK: - Basket Item Model
-struct BasketItem: Codable, Equatable {
-    let productId: String
-    var quantity: Int
-
-    static func ==(lhs: BasketItem, rhs: BasketItem) -> Bool {
-        lhs.productId == rhs.productId && lhs.quantity == rhs.quantity
-    }
-}
 
 struct BasketProductSnapshot: Codable, Equatable {
     let id: String
@@ -73,19 +65,20 @@ final class ProductsService: ProductsServiceType {
         let url = baseURL.appendingPathComponent("products")
         return request(url: url).map { $0.products }
     }
-
+    
     func search(query: String) -> Observable<[Product]> {
-
+        
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmed.isEmpty {
-            return .just([])
+
+        guard trimmed.isEmpty == false else {
+            return .error(NSError(domain: "InvalidQuery", code: -10))
         }
 
-        var comps = URLComponents(url: baseURL.appendingPathComponent("products/search"),
-                                  resolvingAgainstBaseURL: false)!
-        comps.queryItems = [
-            URLQueryItem(name: "q", value: trimmed)
-        ]
+        var comps = URLComponents(
+            url: baseURL.appendingPathComponent("products/search"),
+            resolvingAgainstBaseURL: false
+        )!
+        comps.queryItems = [URLQueryItem(name: "q", value: trimmed)]
 
         guard let url = comps.url else {
             return .error(NSError(domain: "BadURL", code: -2))
@@ -93,6 +86,7 @@ final class ProductsService: ProductsServiceType {
 
         return request(url: url).map { $0.products }
     }
+
 
     private func request(url: URL) -> Observable<ProductsResponse> {
 

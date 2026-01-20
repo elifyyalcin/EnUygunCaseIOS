@@ -13,6 +13,9 @@ protocol MainTabChildFactoryType {
     func makeHome() -> UIViewController
     func makeFavorites() -> UIViewController
     func makeBasket() -> UIViewController
+    
+    var basketChanged: Observable<[BasketLine]> { get }
+    func currentBasket() -> [BasketLine]
 }
 
 final class MainTabChildFactory: MainTabChildFactoryType {
@@ -20,10 +23,13 @@ final class MainTabChildFactory: MainTabChildFactoryType {
     private let favoritesStore: FavoritesStoreType = UserDefaultsFavoritesStore()
     private let basketStore: BasketStoreType = UserDefaultsBasketStore()
     private let productsService: ProductsServiceType = ProductsService()
+    
+    var basketChanged: Observable<[BasketLine]> { basketStore.basketChanged }
+    func currentBasket() -> [BasketLine] { basketStore.currentBasket() }
+
 
     func makeHome() -> UIViewController {
-        let service = ProductsService()
-        let vm = ProductsPageVM(service: service)
+        let vm = ProductsPageVM(service: productsService)
 
         return ProductsPageVC(viewModel: vm, favoritesStore: favoritesStore, basketStore: basketStore)
     }
@@ -50,6 +56,8 @@ final class MainTabContainerVC: UIViewController {
     @IBOutlet private weak var homeButton: UIButton!
     @IBOutlet private weak var favoritesButton: UIButton!
     @IBOutlet private weak var basketButton: UIButton!
+    
+    private let basketBadgeLabel = UILabel()
 
     private let factory: MainTabChildFactoryType
     private let disposeBag = DisposeBag()
@@ -69,6 +77,8 @@ final class MainTabContainerVC: UIViewController {
         navigationItem.title = "Anasayfa"
         navigationItem.largeTitleDisplayMode = .never
         bindTabs()
+        setupBasketBadgeUI()
+        bindBasketBadge()
         switchTo(.home)
         applyTabUI(.home)
     }
@@ -150,4 +160,55 @@ final class MainTabContainerVC: UIViewController {
     }
 
     enum Tab { case home, favorites, basket }
+}
+
+// MARK: - Badge
+
+extension MainTabContainerVC {
+    
+    private func setupBasketBadgeUI() {
+        basketBadgeLabel.translatesAutoresizingMaskIntoConstraints = false
+        basketBadgeLabel.backgroundColor = .systemRed
+        basketBadgeLabel.textColor = .white
+        basketBadgeLabel.font = .systemFont(ofSize: 12, weight: .bold)
+        basketBadgeLabel.textAlignment = .center
+        basketBadgeLabel.isHidden = true
+        basketBadgeLabel.layer.masksToBounds = true
+
+        basketButton.addSubview(basketBadgeLabel)
+
+        NSLayoutConstraint.activate([
+            basketBadgeLabel.topAnchor.constraint(equalTo: basketButton.topAnchor, constant: -4),
+            basketBadgeLabel.trailingAnchor.constraint(equalTo: basketButton.trailingAnchor, constant: -12),
+            basketBadgeLabel.heightAnchor.constraint(equalToConstant: 18),
+            basketBadgeLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 18)
+        ])
+    }
+
+    private func bindBasketBadge() {
+        updateBasketBadge(lines: factory.currentBasket())
+
+        factory.basketChanged
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] lines in
+                self?.updateBasketBadge(lines: lines)
+            })
+            .disposed(by: disposeBag)
+    }
+
+    private func updateBasketBadge(lines: [BasketLine]) {
+        let totalQty = lines.reduce(0) { $0 + $1.quantity }
+
+        if totalQty <= 0 {
+            basketBadgeLabel.isHidden = true
+            basketBadgeLabel.text = nil
+        } else {
+            basketBadgeLabel.isHidden = false
+            basketBadgeLabel.text = totalQty > 99 ? "99+" : "\(totalQty)"
+            basketBadgeLabel.layoutIfNeeded()
+            basketBadgeLabel.layer.cornerRadius = 9
+        }
+    }
+
+
 }

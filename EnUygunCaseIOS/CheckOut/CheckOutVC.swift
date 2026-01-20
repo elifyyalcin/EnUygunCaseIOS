@@ -89,12 +89,12 @@ final class CheckoutVC: UIViewController {
     private func showSuccessAlert() {
         let alert = UIAlertController(title: "Başarılı", message: "Ödeme başarılı.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Tamam", style: .default, handler: { [weak self] _ in
-            self?.goHome()
+            self?.goBackToCart()
         }))
         present(alert, animated: true)
     }
 
-    private func goHome() {
+    private func goBackToCart() {
         tabBarController?.selectedIndex = 0
 
         if let nav = tabBarController?.viewControllers?.first as? UINavigationController {

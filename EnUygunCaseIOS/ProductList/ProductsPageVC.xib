@@ -12,7 +12,6 @@
             <connections>
                 <outlet property="filterButton" destination="ytF-sZ-239" id="GQI-Zn-Jkq"/>
                 <outlet property="searchContainerView" destination="yG4-Lm-GlL" id="Ub8-yX-cii"/>
-                <outlet property="searchField" destination="LZl-g2-qSJ" id="QlM-rw-GjR"/>
                 <outlet property="searchTextField" destination="LZl-g2-qSJ" id="Nm4-Hb-IUc"/>
                 <outlet property="sortButton" destination="a8e-85-Rsc" id="AWx-rK-g3v"/>
                 <outlet property="tableView" destination="Ype-fh-MxA" id="vjh-nK-HYf"/>
